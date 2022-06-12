@@ -2,6 +2,7 @@
 Display, listen, and manage a set of musical scales.
 """
 import os
+import string
 import sys
 import json
 import random
@@ -96,7 +97,12 @@ def restore_data() -> None:
 def __restore_data() -> None:
     """ Restore data to factory settings. We need this indirection because of how click works. """
     __info_echo('Restored data.json to factory settings.')
-    json.dump(FACTORY_SCALE_MAP, open(DATA_FILEPATH, 'w', encoding='utf-8'), indent=4)
+    __save_data(FACTORY_SCALE_MAP)
+
+
+def __save_data(scale_map: dict) -> None:
+    """ Write JSON file scale_map on DATA_FILEPATH """
+    json.dump(scale_map, open(DATA_FILEPATH, 'w', encoding='utf-8'), indent=4)
 
 
 @click.command('list')
@@ -146,10 +152,32 @@ def random_scale(key_name: str = 'C') -> None:
         __echo(f'"{scale_name}" scale in "{key_name.upper()}" : '
                f'{"-".join(_scale_make(key_name_final, SCALE_MAP[scale_name]))}')
 
+@click.command('add')
+@click.argument('SCALE_NAME')
+@click.argument('SCALE_VALUES')
+def add_scale(scale_name: str, scale_values: str) -> None:
+    """ Add Scale. Scale Values should be only a sequence of numbers, separated by '-' characters. """
+    wrong_chars = [sv for sv in scale_values if sv not in string.digits and sv != '-']
+    if wrong_chars:
+        __error_echo(f'Unexpected character(s) in scale_values: "{", ".join(wrong_chars)}"')
+    else:
+        scale_name_real = [sn for sn in SCALE_MAP.keys() if sn.upper() == scale_name.upper()]
+        if scale_name_real:
+            __error_echo(f'Scale name: "{scale_name}" already exists.')
+        else:
+            sv_ints = [sv for sv in scale_values.split('-')]
+            for sv in sv_ints:
+                if not sv or sv not in string.digits:
+                    __error_echo(f'Invalid scale_values: "{scale_values}"', fatal=True)
+            SCALE_MAP[scale_name] = [int(sv) for sv in sv_ints]
+            __save_data(SCALE_MAP)
+            __info_echo(f'Added scale: "{scale_name}" with values: {sv_ints}')
+
 
 if __name__ == '__main__':
     scales.add_command(list_scale_data)
     scales.add_command(restore_data)
     scales.add_command(display_scale)
     scales.add_command(random_scale)
+    scales.add_command(add_scale)
     scales()
