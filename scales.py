@@ -23,8 +23,12 @@ FLAT_TRANSLATION_MAP = {'DB': 'C#', 'EB': 'D#', 'GB': 'F#', 'AB': 'G#', 'BB': 'A
 SCALE_MAP = {}
 FACTORY_SCALE_MAP = {
     'Major': [2, 2, 1, 2, 2, 2, 1],
-    'Minor': [2, 1, 2, 2, 1, 2, 2]
-    # Harmonic Minor TODO
+    'Minor': [2, 1, 2, 2, 1, 2, 2],
+    'Natural Minor': [2, 1, 2, 2, 1, 2, 2],
+    'Harmonic Minor': [2, 1, 2, 2, 1, 3, 2],
+    'Melodic minor asc': [2, 1, 2, 2, 2, 2, 1],
+    'Melodic minor desc': [2, 1, 2, 2, 1, 2, 2],
+    'Minor pentatonic': [3, 2, 2, 3]
 }
 
 # SET UP
