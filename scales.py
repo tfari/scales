@@ -173,6 +173,36 @@ def add_scale(scale_name: str, scale_values: str) -> None:
             __save_data(SCALE_MAP)
             __info_echo(f'Added scale: "{scale_name}" with values: {sv_ints}')
 
+@click.command('remove')
+@click.argument('SCALE_NAME')
+def remove_scale(scale_name: str) -> None:
+    """ Remove scale with name SCALE_NAME. """
+    scale_name_real = [sn for sn in SCALE_MAP.keys() if sn.upper() == scale_name.upper()]
+    if not scale_name_real:
+        __error_echo(f'Scale name: "{scale_name}" does not exist.')
+    else:
+        scale_name_real = scale_name_real[0]
+        SCALE_MAP.pop(scale_name_real)
+        __save_data(SCALE_MAP)
+        __info_echo(f'Removed scale: "{scale_name}"')
+
+@click.command('edit')
+@click.argument('SCALE_NAME')
+@click.argument('SCALE_VALUES')
+def edit_scale(scale_name: str, scale_values: str) -> None:
+    """ Edit scale with name SCALE_NAME to values SCALE_VALUES """
+    scale_name_real = [sn for sn in SCALE_MAP.keys() if sn.upper() == scale_name.upper()]
+    if not scale_name_real:
+        __error_echo(f'Scale name: "{scale_name}" does not exist.')
+    else:
+        sv_ints = [sv for sv in scale_values.split('-')]
+        for sv in sv_ints:
+            if not sv or sv not in string.digits:
+                __error_echo(f'Invalid scale_values: "{scale_values}"', fatal=True)
+        SCALE_MAP[scale_name] = [int(sv) for sv in sv_ints]
+        __save_data(SCALE_MAP)
+        __info_echo(f'Edited scale: "{scale_name}" with values: {sv_ints}')
+
 
 if __name__ == '__main__':
     scales.add_command(list_scale_data)
@@ -180,4 +210,6 @@ if __name__ == '__main__':
     scales.add_command(display_scale)
     scales.add_command(random_scale)
     scales.add_command(add_scale)
+    scales.add_command(remove_scale)
+    scales.add_command(edit_scale)
     scales()
