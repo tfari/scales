@@ -2,10 +2,10 @@
 Display, listen, and manage a set of musical scales.
 """
 import os
-import string
 import sys
 import json
 import random
+import subprocess
 
 from typing import Optional
 
@@ -14,6 +14,7 @@ import click
 
 # SET UP
 random.seed()
+USING_WINDOWS = True if os.name == 'nt' else False
 SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
 DATA_FILEPATH = f'{SCRIPT_PATH}/data.json'
 KEYS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
@@ -77,7 +78,6 @@ def _scale_make(root_key: str, scale_values: list[int]) -> list[str]:
 @click.group()
 def scales() -> None:
     """ Display, listen, and manage a set of musical scales. """
-    global SCALE_MAP
     __load_data()
 
 
@@ -114,7 +114,6 @@ def __save_data(scale_map: dict) -> None:
 def list_scale_data(key_name: str = 'C') -> None:
     """ List all saved scales using KEY_NAME as root key. If no KEY_NAME is passed, produce scales using C as root
     key. """
-    global SCALE_MAP
     key_name_final = _key_translate(key_name)
     if not key_name_final:
         __error_echo(f'Could not understand key: {key_name}')
@@ -131,7 +130,7 @@ def list_scale_data(key_name: str = 'C') -> None:
 def display_scale(scale_name: str, key_name: str = 'C') -> None:
     """ Display the Scale scale_name on the key KEY_NAME. If no KEY_NAME is passed, produce scale using C as root
     key. """
-    global SCALE_MAP
+    # TODO: Allow user to set ROOT_FREQ FOR __play
     scale_name_real = [sn for sn in SCALE_MAP.keys() if sn.upper() == scale_name.upper()]
     if not scale_name_real:
         __error_echo(f'Could not find scale: "{scale_name}"')
@@ -143,6 +142,7 @@ def display_scale(scale_name: str, key_name: str = 'C') -> None:
         else:
             __echo(f'"{scale_name_real}" scale in "{key_name.upper()}" : '
                    f'{"-".join(_scale_make(key_name_final, SCALE_MAP[scale_name_real]))}')
+            __play(key_name_final, SCALE_MAP[scale_name_real])
 
 @click.command('random')
 @click.argument('KEY_NAME', required=False, default='C')
@@ -155,13 +155,15 @@ def random_scale(key_name: str = 'C') -> None:
     else:
         __echo(f'"{scale_name}" scale in "{key_name.upper()}" : '
                f'{"-".join(_scale_make(key_name_final, SCALE_MAP[scale_name]))}')
+        __play(key_name_final, SCALE_MAP[scale_name])
 
 @click.command('add')
 @click.argument('SCALE_NAME')
 @click.argument('SCALE_VALUES')
 def add_scale(scale_name: str, scale_values: str) -> None:
-    """ Add Scale. Scale Values should be only a sequence of numbers, separated by '-' characters. """
-    wrong_chars = [sv for sv in scale_values if sv not in string.digits and sv != '-']
+    """ Add Scale. SCALE_VALUES should be a sequence of numbers, representing semitones,
+    separated by '-' characters. """
+    wrong_chars = [sv for sv in scale_values if not sv.isnumeric() and sv != '-']
     if wrong_chars:
         __error_echo(f'Unexpected character(s) in scale_values: "{", ".join(wrong_chars)}"')
     else:
@@ -171,7 +173,7 @@ def add_scale(scale_name: str, scale_values: str) -> None:
         else:
             sv_ints = [sv for sv in scale_values.split('-')]
             for sv in sv_ints:
-                if not sv or sv not in string.digits:
+                if not sv or not sv.isnumeric():
                     __error_echo(f'Invalid scale_values: "{scale_values}"', fatal=True)
             SCALE_MAP[scale_name] = [int(sv) for sv in sv_ints]
             __save_data(SCALE_MAP)
@@ -194,18 +196,42 @@ def remove_scale(scale_name: str) -> None:
 @click.argument('SCALE_NAME')
 @click.argument('SCALE_VALUES')
 def edit_scale(scale_name: str, scale_values: str) -> None:
-    """ Edit scale with name SCALE_NAME to values SCALE_VALUES """
+    """ Edit scale with name SCALE_NAME to values SCALE_VALUES. SCALE_VALUES should be a sequence of numbers,
+        representing semitones, separated by '-' characters. """
     scale_name_real = [sn for sn in SCALE_MAP.keys() if sn.upper() == scale_name.upper()]
     if not scale_name_real:
         __error_echo(f'Scale name: "{scale_name}" does not exist.')
     else:
         sv_ints = [sv for sv in scale_values.split('-')]
         for sv in sv_ints:
-            if not sv or sv not in string.digits:
+            if not sv or not sv.isnumeric():
                 __error_echo(f'Invalid scale_values: "{scale_values}"', fatal=True)
         SCALE_MAP[scale_name] = [int(sv) for sv in sv_ints]
         __save_data(SCALE_MAP)
         __info_echo(f'Edited scale: "{scale_name}" with values: {sv_ints}')
+
+def __play(root_note_key_name: str, scale_values: list[int], root_a_freq: int = 440) -> None:
+    """ Play a scale """
+    def freq(relative_semitone: int, starting_freq: float) -> float:  # type: ignore
+        """ Determine frequency for relative_semitone from starting_freq."""
+        try:
+            return starting_freq * (2 ** (relative_semitone / 12))
+        except OverflowError as e:
+            __error_echo(f'Number too big: {relative_semitone}, failed with error: {e}', fatal=True)
+    
+    def play(duration: float, frequency: float) -> None:
+        """ Play a frequency for a certain duration. """
+        if USING_WINDOWS:
+            pass # TODO: Implement
+        else:
+            subprocess.run(['play', '-n', 'synth', str(duration), 'sin', str(frequency)], stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL)
+
+    relative_index = (KEYS.index(root_note_key_name)) - 9
+    play(0.1, freq(relative_index, root_a_freq))
+    for sv in scale_values:
+        relative_index += sv
+        play(0.1, freq(relative_index, root_a_freq))
 
 
 if __name__ == '__main__':
