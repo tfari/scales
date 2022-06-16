@@ -1,5 +1,6 @@
 # scales
- Display, listen, and manage a set of musical scales.
+ Display, listen, and manage a set of musical scales. (On Linux/OSx you need the `sox` package in order to be able 
+ to listen to scales.)
 
 ***scales*** understands flats, as {KEY}**B**, ex: ***BB*** (B flat), ***GB*** (G flat).
 
@@ -25,97 +26,53 @@ Commands:
   restore-data  Restore data to factory settings.
   scale         Display the Scale scale_name on the key KEY_NAME.
 ```
+
+### Command Usage
+    All commands can be called with option "--help".
+
+    add: add SCALE_NAME SCALE_VALUES
+        SCALE_VALUES should be a sequence of numbers, representing semitones, separated by '-' characters.
+        Ex:
+              scales.py add "Fifths" 7-7-7-7-7-7
+              scales.py add "My Scale" 2-2-7-4-3
+
+    edit: edit SCALE_NAME SCALE_VALUES
+        Edit scale with name SCALE_NAME to values SCALE_VALUES. SCALE_VALUES should be a sequence of numbers, 
+        representing semitones, separated by '-' characters.
+        Ex:
+              scales.py edit "My Scale" 1-2-3-4
+
+    list: list [KEY_NAME]
+        List all saved scales using KEY_NAME as root key. If no KEY_NAME is passed, produce scales using C as root key.
+        Ex:
+            scales.py list
+            scales.py list BB
+
+    random: random [KEY_NAME]
+        Display a random scale on the key KEY_NAME. If no KEY_NAME is passed, produce scale using C as root key.
+        Ex:
+            scales.py random
+            scales.py random Ab
+    
+    remove: remove SCALE_NAME 
+        Remove scale with name SCALE_NAME.
+        Ex:
+            scales.py remove "My Scale"
+
+    restore-data: restore-data
+        Restore data to factory settings.
+
+    scale: scale SCALE_NAME [KEY_NAME]
+        Display the Scale SCALE_NAME on the key KEY_NAME. If no KEY_NAME is passed, produce scale using C as root key.
+        Ex:
+            scales.py scale "My Scale"
+            scales.py scale "My Scale" C
+            scales.py scale "My Scale" Ab
+
+
 ## Requirements
 ### Modules
 * click
 
-
-## Further usage information
-```shell
-Usage: scales.py add [OPTIONS] SCALE_NAME SCALE_VALUES
-
-  Add Scale. Scale Values should be only a sequence of numbers, separated by
-  '-' characters.
-
-Options:
-  --help  Show this message and exit.
-
-Examples:
-  scales.py add "Fifths" 7-7-7-7-7-7
-  scales.py add "My Scale" 2-2-7-4-3
-```
-```shell
-Usage: scales.py edit [OPTIONS] SCALE_NAME SCALE_VALUES
-
-  Edit scale with name SCALE_NAME to values SCALE_VALUES
-
-Options:
-  --help  Show this message and exit.
-
-Examples:
-  scales.py edit "My Scale" 1-2-3-4
-```
-```shell
-Usage: scales.py list [OPTIONS] [KEY_NAME]
-
-  List all saved scales using KEY_NAME as root key. If no KEY_NAME is passed,
-  produce scales using C as root key.
-
-Options:
-  --help  Show this message and exit.
-
-Examples:
-  scales.py list
-  scales.py list BB
-```
-```shell
-Usage: scales.py random [OPTIONS] [KEY_NAME]
-
-  Display a random scale on the key KEY_NAME. If no KEY_NAME is passed,
-  produce scale using C as root key.
-
-Options:
-  --help  Show this message and exit.
-
-Examples:
-  scales.py random
-  scales.py random Ab
-```
-```shell
-Usage: scales.py remove [OPTIONS] SCALE_NAME
-
-  Remove scale with name SCALE_NAME.
-
-Options:
-  --help  Show this message and exit.
- 
-Examples:
-  scales.py remove "My Scale"
-```
-```shell
-Usage: scales.py restore-data [OPTIONS]
-
-  Restore data to factory settings.
-
-Options:
-  --help  Show this message and exit.
-
-Examples:
-  scales.py restore-data
-```
-```shell
-Usage: scales.py scale [OPTIONS] SCALE_NAME [KEY_NAME]
-
-  Display the Scale scale_name on the key KEY_NAME. If no KEY_NAME is passed,
-  produce scale using C as root key.
-
-Options:
-  --help  Show this message and exit.
-
-Examples:
-  scales.py scale "My Scale"
-  scales.py scale "My Scale" C
-  scales.py scale "My Scale" Ab
-```
-
-
+### Sound
+* Linux/OSx: you need package `sox`. In OSx you can use ***brew*** to get it.
