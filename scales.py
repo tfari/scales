@@ -6,7 +6,6 @@ import sys
 import json
 import random
 import subprocess
-
 from typing import Optional
 
 import click
@@ -15,6 +14,9 @@ import click
 # SET UP
 random.seed()
 USING_WINDOWS = True if os.name == 'nt' else False
+if USING_WINDOWS:
+    import winsound
+
 SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
 DATA_FILEPATH = f'{SCRIPT_PATH}/data.json'
 KEYS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
@@ -218,11 +220,11 @@ def __play(root_note_key_name: str, scale_values: list[int], root_a_freq: int = 
             return starting_freq * (2 ** (relative_semitone / 12))
         except OverflowError as e:
             __error_echo(f'Number too big: {relative_semitone}, failed with error: {e}', fatal=True)
-    
+
     def play(duration: float, frequency: float) -> None:
         """ Play a frequency for a certain duration. """
         if USING_WINDOWS:
-            pass # TODO: Implement
+            winsound.Beep(frequency, duration) # TODO: Test
         else:
             subprocess.run(['play', '-n', 'synth', str(duration), 'sin', str(frequency)], stdout=subprocess.DEVNULL,
                            stderr=subprocess.DEVNULL)
