@@ -2,12 +2,30 @@
  Display, listen, and manage a set of musical scales. (On Linux/OSx you need the `sox` package in order to be able 
  to listen to scales.)
 
-***scales*** understands flats, as {KEY}**B**, ex: ***BB*** (B flat), ***GB*** (G flat).
+***scales*** understands flats as {KEY}**B**, ex: ***BB*** (B flat), ***GB*** (G flat).
 
-Whenever **SCALE_VALUES** is used, the format is {N1}-{N2}-{N3}, where **N**s are relative semitones, separated by 
-"**-**" characters. ex: **2-3-5**.
+Whenever **SCALE_VALUES** needs to be passed, the format is {N1}-{N2}-{N3}, where **N**s are relative semitones from 
+the previous key, (starting from either a passed **ROOT_KEY** or **C** if none is passed ) separated by "**-**" 
+characters. Ex: "**2-3-5**" would be, (for C) : two semitones from C(aka: ***D***), then three semitones from D...
+etc.
 
- 
+When listening to scales, using the ***scale*** command, notes are by default relative to middle A, aka, 440hz, 
+though the user can set a different frequency for ***A*** to start counting from.
+
+
+Scales comes with the following default scales:
+* Major
+* Minor (Shorthand for natural minor)
+* Natural Minor
+* Harmonic Minor
+* Melodic Minor asc
+* Melodic Minor desc
+* Major Pentatonic
+* Minor Pentatonic
+
+
+All **SCALE_NAME**s are interpreted case-insensitive.
+
 ## Usage
 ```shell
 Usage: scales.py [OPTIONS] COMMAND [ARGS]...

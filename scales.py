@@ -29,10 +29,10 @@ FACTORY_SCALE_MAP = {
     'Minor': [2, 1, 2, 2, 1, 2, 2],
     'Natural Minor': [2, 1, 2, 2, 1, 2, 2],
     'Harmonic Minor': [2, 1, 2, 2, 1, 3, 2],
-    'Melodic minor asc': [2, 1, 2, 2, 2, 2, 1],
-    'Melodic minor desc': [2, 1, 2, 2, 1, 2, 2],
-    'Major pentatonic': [2, 2, 3, 2, 3],
-    'Minor pentatonic': [3, 2, 2, 3, 2]
+    'Melodic Minor asc': [2, 1, 2, 2, 2, 2, 1],
+    'Melodic Minor desc': [2, 1, 2, 2, 1, 2, 2],
+    'Major Pentatonic': [2, 2, 3, 2, 3],
+    'Minor Pentatonic': [3, 2, 2, 3, 2]
 }
 
 # Echoing
