@@ -224,7 +224,7 @@ def __play(root_note_key_name: str, scale_values: list[int], root_a_freq: int = 
     def play(duration: float, frequency: float) -> None:
         """ Play a frequency for a certain duration. """
         if USING_WINDOWS:
-            winsound.Beep(frequency, duration) # TODO: Test
+            winsound.Beep(int(frequency), int(duration * 5000))
         else:
             subprocess.run(['play', '-n', 'synth', str(duration), 'sin', str(frequency)], stdout=subprocess.DEVNULL,
                            stderr=subprocess.DEVNULL)
