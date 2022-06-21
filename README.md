@@ -6,11 +6,11 @@
 
 Whenever **SCALE_VALUES** needs to be passed, the format is {N1}-{N2}-{N3}, where **N**s are relative semitones from 
 the previous key, (starting from either a passed **ROOT_KEY** or **C** if none is passed ) separated by "**-**" 
-characters. Ex: "**2-3-5**" would be, (for C) : two semitones from C(aka: ***D***), then three semitones from D...
+characters. Ex: "**2-3-5**" would be, (for C) : two semitones from C (aka: ***D***), then three semitones from D...
 etc.
 
-When listening to scales, using the ***scale*** command, notes are by default relative to middle A, aka, 440.0hz, 
-though the user can set a different frequency for middle ***A*** by passing [ROOT-FREQ] (a float) after [KEY_NAME].
+When listening to scales, using the ***scale*** command, notes are relative to middle A by default, aka: 440.0hz, 
+though the user can set a different frequency for ***middle-A*** by passing [ROOT-FREQ] (a float) after [KEY_NAME].
 
 
 Scales comes with the following default scales:
