@@ -9,8 +9,8 @@ the previous key, (starting from either a passed **ROOT_KEY** or **C** if none i
 characters. Ex: "**2-3-5**" would be, (for C) : two semitones from C(aka: ***D***), then three semitones from D...
 etc.
 
-When listening to scales, using the ***scale*** command, notes are by default relative to middle A, aka, 440hz, 
-though the user can set a different frequency for ***A*** to start counting from.
+When listening to scales, using the ***scale*** command, notes are by default relative to middle A, aka, 440.0hz, 
+though the user can set a different frequency for middle ***A*** by passing [ROOT-FREQ] (a float) after [KEY_NAME].
 
 
 Scales comes with the following default scales:
@@ -80,12 +80,15 @@ Commands:
     restore-data: restore-data
         Restore data to factory settings.
 
-    scale: scale SCALE_NAME [KEY_NAME]
+    scale: scale SCALE_NAME [KEY_NAME] [ROOT_FREQ]
         Display the Scale SCALE_NAME on the key KEY_NAME. If no KEY_NAME is passed, produce scale using C as root key.
+        If ROOT_FREQ is not passed, default middle-A to 440.0hz
         Ex:
             scales.py scale "My Scale"
             scales.py scale "My Scale" C
             scales.py scale "My Scale" Ab
+            scales.py scale "My Scale" C 432
+            scales.py scale "My Scale" D 982.54
 
 
 ## Requirements

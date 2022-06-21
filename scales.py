@@ -105,10 +105,10 @@ def list_scale_data(key_name: str = 'C') -> None:
 @click.command('scale')
 @click.argument('SCALE_NAME')
 @click.argument('KEY_NAME', required=False, default='C')
-def display_scale(scale_name: str, key_name: str = 'C') -> None:
+@click.argument('ROOT_FREQ', required=False, type=float, default=440.0 )
+def display_scale(scale_name: str, key_name: str = 'C', root_freq: float = 440.0) -> None:
     """ Display the Scale scale_name on the key KEY_NAME. If no KEY_NAME is passed, produce scale using C as root
-    key. """
-    # TODO: Allow user to set ROOT_FREQ FOR __play
+    key. If ROOT_FREQ is not passed, default middle-A to 440.0hz """
     scale_name_real = __find_scale_by_name(scale_name)
     if not scale_name_real:
         __error_echo(f'Could not find scale: "{scale_name}"')
@@ -119,7 +119,7 @@ def display_scale(scale_name: str, key_name: str = 'C') -> None:
         else:
             __echo(f'"{scale_name_real}" scale in "{key_name.upper()}" : '
                    f'{"-".join(_scale_make(key_name_final, SCALE_MAP[scale_name_real]))}')
-            __play(key_name_final, SCALE_MAP[scale_name_real])
+            __play(key_name_final, SCALE_MAP[scale_name_real], root_freq)
 
 @click.command('random')
 @click.argument('KEY_NAME', required=False, default='C')
@@ -220,7 +220,7 @@ def __modify_scale_map(scale_name: str, scale_values: str) -> list[str]:
 
 #
 
-def __play(root_note_key_name: str, scale_values: list[int], root_a_freq: int = 440) -> None:
+def __play(root_note_key_name: str, scale_values: list[int], root_a_freq: float = 440.0) -> None:
     """ Play a scale """
     def freq(relative_semitone: int, starting_freq: float) -> float:  # type: ignore
         """ Determine frequency for relative_semitone from starting_freq."""
