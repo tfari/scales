@@ -99,13 +99,13 @@ def list_scale_data(key_name: str = 'C') -> None:
         __info_echo(f'Listing {len(SCALE_MAP)} scales:')
         for scale_name in SCALE_MAP.keys():
             __echo(f'Scale: "{scale_name}" - '
-                   f'Values: "{"-".join([str(sv) for sv in SCALE_MAP[scale_name]])}" - '
+                   f'Values: "{_scale_values_for_echo(SCALE_MAP[scale_name])}" - '
                    f'Example ({key_name.upper()}) - {"-".join(_scale_make(key_name_final, SCALE_MAP[scale_name]))}')
 
 @click.command('scale')
 @click.argument('SCALE_NAME')
 @click.argument('KEY_NAME', required=False, default='C')
-@click.argument('ROOT_FREQ', required=False, type=float, default=440.0 )
+@click.argument('ROOT_FREQ', required=False, type=float, default=440.0)
 def display_scale(scale_name: str, key_name: str = 'C', root_freq: float = 440.0) -> None:
     """ Display the Scale scale_name on the key KEY_NAME. If no KEY_NAME is passed, produce scale using C as root
     key. If ROOT_FREQ is not passed, default middle-A to 440.0hz """
@@ -145,7 +145,7 @@ def add_scale(scale_name: str, scale_values: str) -> None:
         __error_echo(f'Scale name: "{scale_name}" already exists.')
     else:
         final_values = __modify_scale_map(scale_name, scale_values)
-        __info_echo(f'Added scale: "{scale_name}" with values: {final_values}')
+        __info_echo(f'Added scale: "{scale_name}" with values: "{_scale_values_for_echo(final_values)}"')
 
 @click.command('remove')
 @click.argument('SCALE_NAME')
@@ -170,10 +170,13 @@ def edit_scale(scale_name: str, scale_values: str) -> None:
         __error_echo(f'Scale name: "{scale_name}" does not exist.')
     else:
         final_values = __modify_scale_map(scale_name_real, scale_values)
-        __info_echo(f'Edited scale: "{scale_name_real}" with values: {final_values}')
+        __info_echo(f'Edited scale: "{scale_name_real}" with values: "{_scale_values_for_echo(final_values)}"')
 
 
 # Helpers
+def _scale_values_for_echo(scale_values: list[str]) -> str:
+    """ Make string of scale_values from its list representation. """
+    return f'{"-".join([str(sv) for sv in scale_values])}'
 
 def _key_translate(key_name: str) -> Optional[str]:
     """
