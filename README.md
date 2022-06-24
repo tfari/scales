@@ -92,6 +92,8 @@ Commands:
 
 
 ## Requirements
+* python 3.9 (due to type hinting)
+
 ### Modules
 * click
 
