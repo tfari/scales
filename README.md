@@ -27,7 +27,7 @@ Scales comes with the following default scales:
 All **SCALE_NAME**s are interpreted case-insensitive.
 
 ## Usage
-```shell
+```
 Usage: scales.py [OPTIONS] COMMAND [ARGS]...
 
   Display, listen, and manage a set of musical scales.
