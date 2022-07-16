@@ -172,11 +172,39 @@ def edit_scale(scale_name: str, scale_values: str) -> None:
         final_values = __modify_scale_map(scale_name_real, scale_values)
         __info_echo(f'Edited scale: "{scale_name_real}" with values: "{_scale_values_for_echo(final_values)}"')
 
+@click.command('find')
+@click.argument('ROOT_KEY')
+@click.argument('KEYS')
+def find_scale(root_key: str, keys: str) -> None:
+    """ Find similar scales with root key ROOT_KEY, and a list of KEYS. KEYS should be a sequence of KEY_NAMES,
+    separated by '-' characters. Program will display an ordered list of all scales by matching KEYS. """
+    root_key_final = _key_translate(root_key)
+    if not root_key_final:
+        __error_echo(f'Could not understand root key: {root_key_final}', fatal=True)
+
+    final_key_list = []
+    for key in keys.split('-'):
+        translated_key = _key_translate(key)
+        if not translated_key:
+            __error_echo(f'Could not understand key: {key}', fatal=True)
+        else:
+            final_key_list.append(translated_key)
+
+    if root_key_final not in final_key_list:  # Expected behaviour, but not expected user input
+        final_key_list.append(root_key_final)
+
+    similarity_map = _find_scale_similarities_by_keys(root_key_final, final_key_list)
+    ordered_list = sorted(similarity_map.keys(), key=lambda x: similarity_map[x], reverse=True)
+    __info_echo(f'Similar scales to root_key: "{root_key}" keys: "{keys}"')
+    for ol in ordered_list:
+        __echo(f'\tScale: "{ol} {root_key_final}" has {similarity_map[ol]} matches, total scale is: '
+               f'{"-".join(_scale_make(root_key_final, SCALE_MAP[ol]))}')
 
 # Helpers
 def _scale_values_for_echo(scale_values: list[str]) -> str:
     """ Make string of scale_values from its list representation. """
     return f'{"-".join([str(sv) for sv in scale_values])}'
+
 
 def _key_translate(key_name: str) -> Optional[str]:
     """
@@ -221,6 +249,16 @@ def __modify_scale_map(scale_name: str, scale_values: str) -> list[str]:
     __save_data(SCALE_MAP)
     return sv_ints
 
+def _find_scale_similarities_by_keys(root_key: str, keys: list[str]) -> dict:
+    """ Create a similarity map, of the form {scale_name: matches}, matching the keys list elements to all scales
+    with root root_key. """
+    similarity_map = {}
+    for scale_name, scale_values in SCALE_MAP.items():
+        trans_scale = _scale_make(root_key, scale_values)
+        match_count = sum([1 for k in keys if k in trans_scale])
+        similarity_map[scale_name] = match_count
+
+    return similarity_map
 #
 
 def __play(root_note_key_name: str, scale_values: list[int], root_a_freq: float = 440.0) -> None:
@@ -255,4 +293,5 @@ if __name__ == '__main__':
     scales.add_command(add_scale)
     scales.add_command(remove_scale)
     scales.add_command(edit_scale)
+    scales.add_command(find_scale)
     scales()

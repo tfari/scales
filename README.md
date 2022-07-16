@@ -38,6 +38,7 @@ Options:
 Commands:
   add           Add Scale.
   edit          Edit scale with name SCALE_NAME to values SCALE_VALUES
+  find          Find similar scales with root key ROOT_KEY, and a list of KEYS.
   list          List all saved scales using KEY_NAME as root key.
   random        Display a random scale on the key KEY_NAME.
   remove        Remove scale with name SCALE_NAME.
@@ -59,6 +60,12 @@ Commands:
         representing semitones, separated by '-' characters.
         Ex:
               scales.py edit "My Scale" 1-2-3-4
+    
+    find: find ROOT_KEY KEYS
+        Find similar scales with root key ROOT_KEY, and a list of KEYS. KEYS should be a sequence of KEY_NAMES,  
+        separated by '-' characters. Program will display an ordered list of all scales by matching KEYS.
+        Ex:
+             scales.py find C# D# A# G# F
 
     list: list [KEY_NAME]
         List all saved scales using KEY_NAME as root key. If no KEY_NAME is passed, produce scales using C as root key.
