@@ -240,7 +240,7 @@ def __play(root_note_key_name: str, scale_values: list[int], root_a_freq: float 
             subprocess.run(['play', '-n', 'synth', str(duration), 'sin', str(frequency)], stdout=subprocess.DEVNULL,
                            stderr=subprocess.DEVNULL)
 
-    relative_index = (KEYS.index(root_note_key_name)) - 9
+    relative_index = (KEYS.index(root_note_key_name)) - 9  # Frequencies are calculated relative to A
     play(0.1, freq(relative_index, root_a_freq))
     for sv in scale_values:
         relative_index += sv
