@@ -9,11 +9,11 @@ the previous key, (starting from either a passed **ROOT_KEY** or **C** if none i
 characters. Ex: "**2-3-5**" would be, (for C) : two semitones from C (aka: ***D***), then three semitones from D...
 etc.
 
-When listening to scales, using the ***scale*** command, notes are relative to middle A by default, aka: 440.0hz, 
+When listening to scales using the ***scale*** command, notes are relative to middle A by default, aka: 440.0hz, 
 though the user can set a different frequency for ***middle-A*** by passing [ROOT-FREQ] (a float) after [KEY_NAME].
 
 
-Scales comes with the following default scales:
+***scales*** comes with the following default scales:
 * Major
 * Minor (Shorthand for natural minor)
 * Natural Minor
@@ -24,7 +24,7 @@ Scales comes with the following default scales:
 * Minor Pentatonic
 
 
-All **SCALE_NAME**s are interpreted case-insensitive.
+All **SCALE_NAME**s and **KEY_NAME**s are interpreted case-insensitive.
 
 ## Usage
 ```
